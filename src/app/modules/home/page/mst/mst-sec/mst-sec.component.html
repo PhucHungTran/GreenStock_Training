@@ -1,0 +1,126 @@
+<div class="container">
+
+  <mat-form-field appearance="standard">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+  </mat-form-field>
+
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="secCd">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mã CK </th>
+        <td class="s-col" mat-cell *matCellDef="let row"> {{row.secCd}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="secType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Loại </th>
+        <td class="sm-col" mat-cell *matCellDef="let row"> {{row.secType}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="secSName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên viết tắt </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.secSName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="secName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên đầy đủ </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.secName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="capitalValue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Vốn chủ sở hữu </th>
+        <td class="md-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.capitalValue |
+          number: '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="listedQty">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> KL niêm yết </th>
+        <td class="md-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.listedQty |
+          number: '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="foreignMaxQty">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> KL max cho NĐT NN </th>
+        <td class="sm-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.foreignMaxQty |
+          number: '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stockDividendRate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TL quyền CP vào tài sản (Số lượng) </th>
+        <td class="sm-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.stockDividendRate
+          | number: '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cashDividendRate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TL quyền CP vào tài sản (Số tiền)</th>
+        <td class="sm-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.cashDividendRate |
+          number: '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="marketCd">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sàn </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.marketCd}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tradingLot">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Lô GD </th>
+        <td class="sm-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.tradingLot |
+          number: '.0'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="parValue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mệnh giá </th>
+        <td class="sm-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.parValue | number:
+          '.0'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="maxRoom">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Room của mã </th>
+        <td class="s-col" mat-cell *matCellDef="let row" style="text-align: right;"> {{row.maxRoom | number:
+          '.0'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Trạng thái </th>
+        <td class="sm-col" mat-cell *matCellDef="let row"> {{row.status}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="remarks">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Ghi chú </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.remarks}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdUserId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Người tạo </th>
+        <td class="sm-col" mat-cell *matCellDef="let row"> {{row.createdUserId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian tạo </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.createdTime | date: 'dd/MM/yyyy HH:mm:ss'}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedUserId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Người sửa </th>
+        <td class="sm-col" mat-cell *matCellDef="let row"> {{row.updatedUserId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian sửa </th>
+        <td class="md-col" mat-cell *matCellDef="let row"> {{row.updatedTime | date: 'dd/MM/yyyy HH:mm:ss'}}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="14" style="text-align:center">Không tồn tại dữ liệu</td>
+      </tr>
+
+    </table>
+
+    <mat-paginator pageSize="panigatorSize[0]" [pageSizeOptions]="panigatorSize" aria-label="Select page of users"></mat-paginator>
+
+  </div>
+</div>

@@ -1,0 +1,20 @@
+ul, li {
+  list-style-type: none;
+}
+#footer{
+  display: flex;
+  width: 95vw;
+  flex-direction: row-reverse;
+}
+
+.all{
+  position: relative;
+  height: 90vh;
+  width: 95vw;
+  overflow-y: scroll;
+}
+
+button {
+  margin: 2px;
+}
+

@@ -1,0 +1,29 @@
+<div class="all">
+  <ul *ngFor="let node of tempKey">
+    <li>
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox class="example-margin" [checked]="allCompltedTemp[node]" [indeterminate]="someComplete(node)"
+            (change)="setAll($event.checked,node)">
+            {{temp[node].name}}
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <ul>
+            <li *ngFor="let subtask of temp[node].subtasks">
+              <mat-checkbox [(ngModel)]="subtask.completed" (ngModelChange)="updateAllComplete(node)">
+                {{subtask.name}}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </span>
+      </section>
+    </li>
+  </ul>
+
+</div>
+
+<div id="footer" class="row">
+  <button mat-raised-button color="primary" (click)="onSubmit()">Submit</button>
+  <button mat-raised-button color="warn" (click)="onClear()">Reset</button>
+</div>
