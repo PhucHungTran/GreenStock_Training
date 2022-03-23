@@ -1,0 +1,124 @@
+::ng-deep .string {
+  text-align: left;
+}
+
+::ng-deep .number {
+  text-align: right;
+}
+
+::ng-deep .date {
+  text-align: center;
+}
+
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  justify-content: center;
+}
+
+::ng-deep ::-webkit-scrollbar {
+  width: 1.3vh;
+  height: 1.3vh;
+}
+::ng-deep ::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+}
+::ng-deep ::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(left, #fff, #e4e4e4);
+  border: 1px solid #aaa;
+}
+::ng-deep ::-webkit-scrollbar-thumb:hover {
+  background: #fff
+}
+
+::ng-deep .mat-form-field-wrapper {
+  position: relative;
+  color: black;
+}
+
+::ng-deep .mat-header-cell {
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
+  justify-content: center !important;
+  font-size: 13px;
+  color: #1a084c;
+}
+
+::ng-deep .mat-row:nth-child(even) {
+  background-color: #D3D3D3;
+}
+
+::ng-deep .mat-row:nth-child(odd) {
+  background-color: #F5F5F5;
+}
+::ng-deep .mat-row:hover .mat-cell {
+  background-color: rgb(194, 194, 194);
+}
+::ng-deep .mat-table {
+  width: 100%;
+  display: block;
+  height: calc(100vh - 342px);
+  overflow: auto;
+  table-layout: fixed;
+}
+
+.s-col {
+  max-width: 4vw !important;
+  min-width: 4vw !important;
+  padding-right: 0.5vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sx-col {
+  max-width: 8vw !important;
+  min-width: 8vw !important;
+  padding-right: 0.5vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sm-col {
+  max-width: 6vw !important;
+  min-width: 6vw !important;
+  padding-right: 0.5vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.md-col {
+  max-width: 12vw !important;
+  min-width: 12vw !important;
+  padding-right: 0.5vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+::ng-deep .mat-form-field {
+  min-width: 100px;
+  max-width: 130px;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 4px;
+  padding: 4px;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  height: 42px !important;
+}
+::ng-deep .mat-form-field-label-wrapper {
+  top: -1.5em;
+}
+::ng-deep .mat-form-field-infix {
+  padding-top: 2px !important;
+}
+::ng-deep .mat-form-field-wrapper {
+  position: relative;
+  color: black;
+}
+
+button{
+  margin-right: 10px;
+}

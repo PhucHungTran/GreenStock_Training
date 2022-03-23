@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{title}}</h1>
+
+<div *ngIf="action === ACTION_APPROVE || action === ACTION_CANCEL" >
+    {{message}}
+</div>
+<div mat-dialog-actions valign="bottom" align="end">
+    <button mat-raised-button color="warn" (click)="onCancel()">Đóng</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()"cdkFocusInitial>{{titleConfirm}}</button>
+</div>
+
