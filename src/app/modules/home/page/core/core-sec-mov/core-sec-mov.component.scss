@@ -144,3 +144,42 @@ button{
   max-width: 360px;
   text-align: center;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.footer{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.footer-left{
+  display: flex;
+  align-content: center;
+}
+
+.footer-left-text{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footer .footer-left-input{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.footer .footer-left-input div{
+  padding: 0 !important;
+  margin: 0 !important;
+}

@@ -1,2 +1,2 @@
 export const apiUrl = 'https://www.greenstock.vn/backend/api/'
-export const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0dWFubHYiLCJpYXQiOjE2NDgwMDIwNjAsImV4cCI6MTY0ODA4ODQ2MH0.4n8TJ_LnWh8xWGFCtLHYvqx5urxykfbyrIz8bt5O4OdLgA_UUuhllyVV6x9AZdoUOC69K2XofWU5l8ircMVENw'
+export const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MSIsImlhdCI6MTY0ODAyOTAwNywiZXhwIjoxNjQ4MTE1NDA3fQ.IHvOZ9_woN1xiVYkiDPVPjCEteiFd0PCsGuIIgcLaT_o2NucRgRhr7qKlGZKW5WjSo-8qCtZhmsqBLfkuWgUmA'
