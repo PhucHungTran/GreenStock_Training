@@ -22,6 +22,8 @@ import {
 } from 'src/app/core/constants/core';
 import { map, startWith } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-cor-sec-mov',
   templateUrl: './core-sec-mov.component.html',
@@ -41,8 +43,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   tradeTypeList: any;
   quantityTypeList: any;
 
-  isLoadingResults = true;
-  isRateLimitReached = false;
+  // isLoadingResults = true;
+  // isRateLimitReached = false;
 
   statusSelect !: string;
   groupCdSelect !: string;
@@ -67,13 +69,53 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
   selection = new SelectionModel<CorSecMov>(true, [])
 
-  displayedColumns: string[] = ['select', 'alloDate', 'srcNo', 'effectDate', 'status', 'groupCd', 'globalTransId', 'taskCd', 'subAccoNo', 'tradeType', 'secCd', 'quantity', 'quantityType', 'description', 'descriptionEn', 'unitCode', 'remarks', 'approvedUserId', 'approvedTime', 'cancelledUserId', 'cancelledTime', 'createdUserId', 'createdTime', 'updatedUserId', 'updatedTime', 'id']
+  displayedColumns: string[] = ['select', 'alloDate', 'srcNo', 'effectDate', 'status', 'groupCd', 'taskCd', 'subAccoNo', 'tradeType', 'secCd', 'quantity', 'quantityType', 'description', 'descriptionEn', 'unitCode', 'remarks', 'approvedUserId', 'approvedTime', 'cancelledUserId', 'cancelledTime', 'createdUserId', 'createdTime', 'updatedUserId', 'updatedTime', 'id']
 
   dataSource !: MatTableDataSource<CorSecMov>
   paginatorSize: number[] = [10, 25, 50, 100]
 
   @ViewChild(MatPaginator) paginator !: MatPaginator;
   @ViewChild(MatSort) sort !: MatSort;
+
+  @ViewChild('fromInput', {
+    read: MatInput
+  })
+  fromInput!: MatInput;
+
+  @ViewChild('toInput', {
+    read: MatInput
+  })
+  toInput!: MatInput;
+
+  @ViewChild('groupCd', {
+    read: MatSelect
+  })
+  groupCd!: MatSelect;
+
+  @ViewChild('taskCd', {
+    read: MatSelect
+  })
+  taskCd!: MatSelect;
+
+  @ViewChild('tradeType', {
+    read: MatSelect
+  })
+  tradeType!: MatSelect;
+
+  @ViewChild('sub', {
+    read: MatInput
+  })
+  sub!: MatInput;
+
+  @ViewChild('sec', {
+    read: MatInput
+  })
+  sec!: MatInput;
+
+  @ViewChild('tus', {
+    read: MatSelect
+  })
+  tus!: MatSelect;
 
   constructor(
     private corService: CoreService,
@@ -95,7 +137,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    // this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    this.getCoreSecMov();
     this.getCorSubAcco();
     this.getMstSec();
   }
@@ -123,10 +166,10 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   }
 
   //phân trang
-  OnPageChange(event: PageEvent) {
-    console.log(event);
-    this.getCoreSecMov(this.query, event.pageSize, event.pageIndex * event.pageSize);
-  }
+  // OnPageChange(event: PageEvent) {
+  //   console.log(event);
+  //   this.getCoreSecMov(this.query, event.pageSize, event.pageIndex * event.pageSize);
+  // }
 
   //Nghiep vu
   getGroupCd(groupcd: any) {
@@ -203,17 +246,26 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  getCoreSecMov(query: any, limit: number, offset: number): void {
-    this.isLoadingResults = true;
-    this.corService.getSecMov(query, limit, offset).subscribe(data => {
-      console.log(data);
+  // getCoreSecMov(query: any, limit: number, offset: number): void {
+  //   this.isLoadingResults = true;
+  //   this.corService.getSecMov(query, limit, offset).subscribe(data => {
+  //     console.log(data);
+  //     this.listSecMov = data.data;
+  //     this.dataSource = new MatTableDataSource(this.listSecMov);
+  //     this.isLoadingResults = false;
+  //     this.changDectorRef.detectChanges();
+  //     // this.dataSource.paginator = this.paginator;
+  //     this.dataSource.sort = this.sort;
+  //     this.m_length = data.count;
+  //   }, err => console.log(err))
+  // }
+
+  getCoreSecMov(): void {
+    this.corService.getSecMov(this.query).subscribe(data => {
       this.listSecMov = data.data;
       this.dataSource = new MatTableDataSource(this.listSecMov);
-      this.isLoadingResults = false;
-      this.changDectorRef.detectChanges();
-      // this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      this.m_length = data.count;
     }, err => console.log(err))
   }
 
@@ -237,7 +289,7 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   }
 
   search() {
-    this.query = {
+    let querySearch = {
       startDate: this.startDate,
       endDate: this.endDate,
       status: this.getStatus(this.statusSelect).data,
@@ -247,17 +299,42 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
       tradeType: this.getTradeType(this.tradeTypeSelect).data,
       secCd: this.secCdControl.value
     };
+    this.corService.getSecMov(querySearch).subscribe(data => {
+      this.dataSource = new MatTableDataSource(data.data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.id = this.dataSource.data.length;
+    },err => console.log(err))
 
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
-    this.m_offset = 0;
+    // this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    // this.m_offset = 0;
   }
 
-  reset() {
-    this.query = {};
-    this.m_limit = 10;
-    this.m_offset = 0;
+  // reset() {
+  //   this.query = {};
+  //   this.m_limit = 10;
+  //   this.m_offset = 0;
 
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+  //   this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+  // }
+
+  reset(): void{
+    this.fromInput.value = '';
+    this.toInput.value = '';
+    this.groupCd.value = '';
+    this.taskCd.value = '';
+    this.tradeType.value = '';
+    this.sub.value = '';
+    this.sec.value = '';
+    this.tus.value = '';
+    let queryReset = {
+    }
+    this.corService.getSecMov(queryReset).subscribe(data => {
+      this.dataSource = new MatTableDataSource(data.data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.id = this.dataSource.data.length;
+    },err => console.log(err))
   }
 
   aprrovedCorSecMov(row: any) {
@@ -472,7 +549,7 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
         'Ngày hiệu lực ': this.getDateFormat(item.effectDate),
         'Trạng thái': this.getStatus(item.status).name,
         'Nghiệp vụ': this.getGroupCd(item.groupCd).name,
-        'Mã thao tác': item.globalTransId,
+        // 'Mã thao tác': item.globalTransId,
         'Thao tác': this.getTaskCd(item.taskCd).name,
         'Tiểu khoản ': item.subAccoNo,
         'Tăng/Giảm ': this.getTradeType(item.tradeType).name,

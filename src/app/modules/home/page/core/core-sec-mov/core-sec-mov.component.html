@@ -2,23 +2,24 @@
   <h2>Bảng kiểm soát - Giao dịch chứng khoán</h2>
   <hr>
   <div>
+
     <mat-form-field appearance="outline">
       <mat-label>Từ ngày</mat-label>
-      <input matInput [matDatepicker]="picker1" [(ngModel)]="startDate" name="startDate" readonly>
+      <input #fromInput matInput [matDatepicker]="picker1" [(ngModel)]="startDate" name="startDate" readonly>
       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Đến ngày</mat-label>
-      <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" name="endDate" readonly>
+      <input #toInput matInput [matDatepicker]="picker2" [(ngModel)]="endDate" name="endDate" readonly>
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Nghiệp vụ</mat-label>
-      <mat-select [(value)]="groupCdSelect" (selectionChange)="setupTaskCd()">
+      <mat-select #groupCd [(value)]="groupCdSelect" (selectionChange)="setupTaskCd()">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let group of groupCdList" value="{{group.value}}">{{group.name}}</mat-option>
       </mat-select>
@@ -26,7 +27,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Thao tác</mat-label>
-      <mat-select [(value)]="taskCdSelect">
+      <mat-select #taskCd [(value)]="taskCdSelect">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let task of taskCdList" value="{{task.value}}">{{task.name}}</mat-option>
       </mat-select>
@@ -34,7 +35,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Tăng / Giảm</mat-label>
-      <mat-select [(value)]="tradeTypeSelect">
+      <mat-select #tradeType [(value)]="tradeTypeSelect">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let tradeType of tradeTypeList" value="{{tradeType.value}}">{{tradeType.name}}
         </mat-option>
@@ -43,7 +44,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Số tiểu khoản</mat-label>
-      <input type="text" placeholder="Chọn" aria-label="Tiểu khoản" matInput [formControl]="subAccoNoControl"
+      <input #sub type="text" placeholder="Chọn" [maxlength]="9" aria-label="Tiểu khoản" matInput [formControl]="subAccoNoControl"
         [matAutocomplete]="autoSubAccoNo">
       <mat-autocomplete autoActiveFirstOption #autoSubAccoNo="matAutocomplete">
         <mat-option *ngFor="let subAccoNo of subAccoNoFilter | async" [value]="subAccoNo">
@@ -54,7 +55,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Mã chứng khoán</mat-label>
-      <input type="text" placeholder="Chọn" aria-label="Mã chứng khoán" matInput [formControl]="secCdControl"
+      <input #sec type="text" placeholder="Chọn" [maxLength]="3" style="text-transform: uppercase;" aria-label="Mã chứng khoán" matInput [formControl]="secCdControl"
         [matAutocomplete]="autoSecCd">
       <mat-autocomplete autoActiveFirstOption #autoSecCd="matAutocomplete">
         <mat-option *ngFor="let secCd of secCdFilter | async" [value]="secCd">
@@ -66,7 +67,7 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Trạng Thái</mat-label>
-      <mat-select [(value)]="statusSelect">
+      <mat-select #tus [(value)]="statusSelect">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let status of statusList" value="{{status.value}}">{{status.name}}</mat-option>
       </mat-select>
@@ -77,20 +78,23 @@
       <mat-icon>search</mat-icon>
       Tìm Kiếm
     </button>
+
     <button mat-raised-button style="background-color: #6ABD45; color: #fff" (click)="reset()">reset</button>
+
     <!-- <button mat-raised-button style="background-color: #6ABD45; color: #fff;" (click)="approveSelected()">Duyệt</button>
     <button mat-raised-button color="warn" (click)="cancelSelected()">Hủy</button> -->
     <button mat-raised-button style="background-color: #6ABD45; color: #fff" (click)="exportExcel()">Xuất excel</button>
+
   </div>
 
 
   <div class="mat-elevation-z8 example-container">
-    <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+    <!-- <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
       <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
       <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
         GitHub's API rate limit has been reached. It will be reset in one minute.
       </div>
-    </div>
+    </div> -->
     <table mat-table [dataSource]="dataSource" matSort>
 
       <!-- <ng-container matColumnDef="check">
@@ -151,10 +155,10 @@
         <td class="md-col string" mat-cell *matCellDef="let element"> {{getGroupCd(element.groupCd).name}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="globalTransId">
+      <!-- <ng-container matColumnDef="globalTransId">
         <th class="sm-col" mat-header-cell *matHeaderCellDef mat-sort-header> Mã thao tác </th>
         <td class="sm-col string" mat-cell *matCellDef="let element"> {{element.globalTransId}} </td>
-      </ng-container>
+      </ng-container> -->
 
       <ng-container matColumnDef="taskCd">
         <th class="md-col" mat-header-cell *matHeaderCellDef mat-sort-header> Thao tác </th>
@@ -238,8 +242,7 @@
 
       <ng-container matColumnDef="createdTime">
         <th class="sm-col" mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian tạo </th>
-        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy
-          HH:mm:ss'}} </td>
+        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
       </ng-container>
 
 
@@ -251,8 +254,7 @@
 
       <ng-container matColumnDef="updatedTime">
         <th class="sm-col" mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian sửa </th>
-        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.updatedTime | date: 'dd/MM/yyyy
-          HH:mm:ss'}} </td>
+        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.updatedTime | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="id">
@@ -268,9 +270,12 @@
         <td class="mat-cell" colspan="26">Không tồn tại</td>
       </tr>
     </table>
-
+<!--
     <mat-paginator [length]="m_length" [pageSize]="m_limit" [pageIndex]="m_offset" (page)="OnPageChange($event)"
       [pageSizeOptions]="paginatorSize" aria-label="Select page of users">
+    </mat-paginator> -->
+
+    <mat-paginator pageSize="paginatorSize[0]" [pageSizeOptions]="paginatorSize" aria-label="Select page of users">
     </mat-paginator>
 
   </div>

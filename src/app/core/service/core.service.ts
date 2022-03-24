@@ -29,8 +29,12 @@ export class CoreService {
     this.httpOptions = header
   }
 
-  getSecMov(query: {}, limit: number, offset: number): Observable<any> {
-    return this.http.post(`http://127.0.0.1:8080/api/corsecmov?offset=${offset}&limit=${limit}`, query)
+  // getSecMov(query: {}, limit: number, offset: number): Observable<any> {
+  //   return this.http.post(`http://127.0.0.1:8080/api/corsecmov?offset=${offset}&limit=${limit}`, query)
+  // }
+
+  getSecMov(query: {}): Observable<any> {
+    return this.http.post(`${apiUrl}corsecmov/get`,query,this.httpOptions)
   }
 
   approvedCorSecMov(data: any): Observable<any> {
