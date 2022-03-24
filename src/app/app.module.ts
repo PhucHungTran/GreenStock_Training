@@ -1,7 +1,7 @@
 import { HomeModule } from './modules/home/home.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +10,7 @@ import { HomeComponent } from './modules/home/home.component';
 import { SharedModule } from './shared/shared.module';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { CustomPaginator } from './core/constants/CustomPaginatorConfiguration';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -23,11 +23,12 @@ import { CustomPaginator } from './core/constants/CustomPaginatorConfiguration';
     BrowserAnimationsModule,
     HttpClientModule,
     HomeModule,
-    SharedModule
+    SharedModule,
 
+    MatProgressSpinnerModule,
   ],
   providers: [
-    { provide: MatPaginatorIntl, useValue : CustomPaginator() }
+    { provide: MatPaginatorIntl, useValue: CustomPaginator() }
   ],
   bootstrap: [AppComponent]
 })

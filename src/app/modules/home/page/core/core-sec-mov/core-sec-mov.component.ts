@@ -7,7 +7,7 @@ import { ExportExcelService } from 'src/app/core/service/export-excel.service';
 import { CorSecMov } from 'src/app/data/schema/core/cor-sec-mov';
 import { CorSubAccount } from 'src/app/data/schema/customer/cor-sub-acc';
 import { MstSec } from 'src/app/data/schema/mst/mst-sec';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -41,7 +41,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   tradeTypeList: any;
   quantityTypeList: any;
 
-  fileSaverData: any;
+  isLoadingResults = true;
+  isRateLimitReached = false;
 
   statusSelect !: string;
   groupCdSelect !: string;
@@ -57,6 +58,11 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   startDate !: Date;
   endDate !: Date;
   id !: number;
+
+  m_limit: number = 10;
+  m_offset: number = 0;
+  m_length: number = 10;
+
 
 
   selection = new SelectionModel<CorSecMov>(true, [])
@@ -89,16 +95,13 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.getCoreSecMov();
+    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
     this.getCorSubAcco();
     this.getMstSec();
   }
 
   ngOnInit(): void {
   }
-
-
-
 
   // Trang thai
   getStatus(status: any) {
@@ -119,6 +122,11 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     return '';
   }
 
+  //phân trang
+  OnPageChange(event: PageEvent) {
+    console.log(event);
+    this.getCoreSecMov(this.query, event.pageSize, event.pageIndex * event.pageSize);
+  }
 
   //Nghiep vu
   getGroupCd(groupcd: any) {
@@ -195,14 +203,17 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  getCoreSecMov(): void {
-    this.corService.getSecMov(this.query).subscribe(data => {
+  getCoreSecMov(query: any, limit: number, offset: number): void {
+    this.isLoadingResults = true;
+    this.corService.getSecMov(query, limit, offset).subscribe(data => {
+      console.log(data);
       this.listSecMov = data.data;
       this.dataSource = new MatTableDataSource(this.listSecMov);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.isLoadingResults = false;
       this.changDectorRef.detectChanges();
-      this.fileSaverData = data.data;
+      // this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.m_length = data.count;
     }, err => console.log(err))
   }
 
@@ -226,7 +237,7 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   }
 
   search() {
-    const totalSearch = {
+    this.query = {
       startDate: this.startDate,
       endDate: this.endDate,
       status: this.getStatus(this.statusSelect).data,
@@ -236,16 +247,17 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
       tradeType: this.getTradeType(this.tradeTypeSelect).data,
       secCd: this.secCdControl.value
     };
-    this.corService.getSecMov(totalSearch).subscribe(data => {
-      this.dataSource = new MatTableDataSource(data.data);
-      this.changDectorRef.detectChanges();
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      this.fileSaverData = data.data;
-      this.id = this.dataSource.data.length;
-      console.log(totalSearch)
-      console.log(data)
-    }, err => console.log(err))
+
+    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    this.m_offset = 0;
+  }
+
+  reset() {
+    this.query = {};
+    this.m_limit = 10;
+    this.m_offset = 0;
+
+    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
   }
 
   aprrovedCorSecMov(row: any) {

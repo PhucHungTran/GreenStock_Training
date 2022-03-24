@@ -77,11 +77,20 @@
       <mat-icon>search</mat-icon>
       Tìm Kiếm
     </button>
+    <button mat-raised-button style="background-color: #6ABD45; color: #fff" (click)="reset()">reset</button>
     <!-- <button mat-raised-button style="background-color: #6ABD45; color: #fff;" (click)="approveSelected()">Duyệt</button>
     <button mat-raised-button color="warn" (click)="cancelSelected()">Hủy</button> -->
     <button mat-raised-button style="background-color: #6ABD45; color: #fff" (click)="exportExcel()">Xuất excel</button>
   </div>
-  <div class="mat-elevation-z8">
+
+
+  <div class="mat-elevation-z8 example-container">
+    <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+      <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+        GitHub's API rate limit has been reached. It will be reset in one minute.
+      </div>
+    </div>
     <table mat-table [dataSource]="dataSource" matSort>
 
       <!-- <ng-container matColumnDef="check">
@@ -227,10 +236,10 @@
         <td class="sm-col string" mat-cell *matCellDef="let element"> {{element.createdUserId}} </td>
       </ng-container>
 
-
       <ng-container matColumnDef="createdTime">
         <th class="sm-col" mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian tạo </th>
-        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
+        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.createdTime | date: 'dd/MM/yyyy
+          HH:mm:ss'}} </td>
       </ng-container>
 
 
@@ -242,7 +251,8 @@
 
       <ng-container matColumnDef="updatedTime">
         <th class="sm-col" mat-header-cell *matHeaderCellDef mat-sort-header> Thời gian sửa </th>
-        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.updatedTime | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
+        <td class="md-col date" mat-cell *matCellDef="let element"> {{element.updatedTime | date: 'dd/MM/yyyy
+          HH:mm:ss'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="id">
@@ -259,7 +269,8 @@
       </tr>
     </table>
 
-    <mat-paginator pageSize="paginatorSize[0]" [pageSizeOptions]="paginatorSize" aria-label="Select page of users">
+    <mat-paginator [length]="m_length" [pageSize]="m_limit" [pageIndex]="m_offset" (page)="OnPageChange($event)"
+      [pageSizeOptions]="paginatorSize" aria-label="Select page of users">
     </mat-paginator>
 
   </div>
