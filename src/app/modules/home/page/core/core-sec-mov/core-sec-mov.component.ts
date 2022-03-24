@@ -59,10 +59,12 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   endDate !: Date;
   id !: number;
 
-  m_limit: number = 10;
-  m_offset: number = 0;
-  m_length: number = 10;
 
+  numberPage = new FormControl();
+  m_limit: number = 10;
+  m_sizePage: number = 0;
+  m_length: number = 10;
+  numberPageAll: number = 0;
 
 
   selection = new SelectionModel<CorSecMov>(true, [])
@@ -95,7 +97,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    this.numberPage.setValue(this.m_sizePage);
+    this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
     this.getCorSubAcco();
     this.getMstSec();
   }
@@ -125,7 +128,16 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   //phân trang
   OnPageChange(event: PageEvent) {
     console.log(event);
-    this.getCoreSecMov(this.query, event.pageSize, event.pageIndex * event.pageSize);
+    this.m_limit = event.pageSize;
+    this.m_sizePage = event.pageIndex;
+    this.numberPage.setValue(event.pageIndex);
+    this.getCoreSecMov(this.query, event.pageSize, event.pageIndex);
+  }
+
+  onNextPage() {
+    console.log(this.numberPage.value);
+    this.m_sizePage = this.numberPage.value;
+    this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
   }
 
   //Nghiep vu
@@ -203,17 +215,19 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  getCoreSecMov(query: any, limit: number, offset: number): void {
+  getCoreSecMov(query: any, limit: number, sizePage: number): void {
     this.isLoadingResults = true;
-    this.corService.getSecMov(query, limit, offset).subscribe(data => {
+    this.corService.getSecMov(query, limit, sizePage * limit).subscribe(data => {
       console.log(data);
       this.listSecMov = data.data;
       this.dataSource = new MatTableDataSource(this.listSecMov);
       this.isLoadingResults = false;
       this.changDectorRef.detectChanges();
       // this.dataSource.paginator = this.paginator;
+
       this.dataSource.sort = this.sort;
       this.m_length = data.count;
+      this.numberPageAll = Math.floor(this.m_length / this.m_limit);
     }, err => console.log(err))
   }
 
@@ -236,7 +250,7 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     }, err => console.log(err))
   }
 
-  search() {
+  async search() {
     this.query = {
       startDate: this.startDate,
       endDate: this.endDate,
@@ -248,16 +262,18 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
       secCd: this.secCdControl.value
     };
 
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
-    this.m_offset = 0;
+    await this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
+    this.paginator.pageIndex = 0;
   }
 
-  reset() {
+  async reset() {
     this.query = {};
     this.m_limit = 10;
-    this.m_offset = 0;
+    this.m_sizePage = 0;
 
-    this.getCoreSecMov(this.query, this.m_limit, this.m_offset);
+    await this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
+    this.paginator.pageIndex = 0;
+    this.paginator.pageSize = 0;
   }
 
   aprrovedCorSecMov(row: any) {

@@ -83,6 +83,7 @@
     <button mat-raised-button style="background-color: #6ABD45; color: #fff" (click)="exportExcel()">Xuất excel</button>
   </div>
 
+  <br>
 
   <div class="mat-elevation-z8 example-container">
     <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
@@ -269,9 +270,17 @@
       </tr>
     </table>
 
-    <mat-paginator [length]="m_length" [pageSize]="m_limit" [pageIndex]="m_offset" (page)="OnPageChange($event)"
-      [pageSizeOptions]="paginatorSize" aria-label="Select page of users">
-    </mat-paginator>
-
+    <div class="footer">
+      <div class="footer-left">
+        <mat-form-field class="footer-left-input" appearance="outline">
+          <mat-label>Số trang</mat-label>
+          <input type="number" (keyup.enter)="onNextPage()" aria-label="Số trang" matInput [formControl]="numberPage">
+        </mat-form-field>
+        <div class="footer-left-text"> Số trang {{m_sizePage}}/{{numberPageAll}}</div>
+      </div>
+      <mat-paginator [length]="m_length" [pageSize]="m_limit" [pageIndex]="m_sizePage" (page)="OnPageChange($event)"
+        [pageSizeOptions]="paginatorSize" showFirstLastButtons aria-label="Select page of users">
+      </mat-paginator>
+    </div>
   </div>
 </div>
