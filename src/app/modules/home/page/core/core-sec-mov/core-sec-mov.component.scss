@@ -59,7 +59,7 @@
 ::ng-deep .mat-table {
   width: 100%;
   display: block;
-  height: calc(100vh - 342px);
+  height: calc(100vh - 300px);
   overflow: auto;
   table-layout: fixed;
 }
@@ -153,6 +153,10 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.input-search-date{
+  max-width: 200px;
 }
 
 .footer{

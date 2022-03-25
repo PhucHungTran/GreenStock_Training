@@ -11,7 +11,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { CorSecMovDialogComponent } from './cor-sec-mov-dialog/cor-sec-mov-dialog.component';
 import {
   CORE_GLOBAL_TRANS_QUANTITY_TYPE,
@@ -22,6 +22,8 @@ import {
 } from 'src/app/core/constants/core';
 import { map, startWith } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-cor-sec-mov',
   templateUrl: './core-sec-mov.component.html',
@@ -55,8 +57,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
   secCdControl = new FormControl();
 
   alloDate !: Date;
-  startDate !: Date;
-  endDate !: Date;
+  // startDate !: Date;
+  // endDate !: Date;
   id !: number;
 
 
@@ -69,13 +71,49 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
   selection = new SelectionModel<CorSecMov>(true, [])
 
-  displayedColumns: string[] = ['select', 'alloDate', 'srcNo', 'effectDate', 'status', 'groupCd', 'globalTransId', 'taskCd', 'subAccoNo', 'tradeType', 'secCd', 'quantity', 'quantityType', 'description', 'descriptionEn', 'unitCode', 'remarks', 'approvedUserId', 'approvedTime', 'cancelledUserId', 'cancelledTime', 'createdUserId', 'createdTime', 'updatedUserId', 'updatedTime', 'id']
-
+  displayedColumns: string[] = ['select', 'alloDate', 'srcNo', 'effectDate', 'status', 'groupCd', 'taskCd', 'subAccoNo', 'tradeType', 'secCd', 'quantity', 'quantityType', 'description', 'descriptionEn', 'unitCode', 'remarks', 'approvedUserId', 'approvedTime', 'cancelledUserId', 'cancelledTime', 'createdUserId', 'createdTime', 'updatedUserId', 'updatedTime', 'id'];
   dataSource !: MatTableDataSource<CorSecMov>
   paginatorSize: number[] = [10, 25, 50, 100]
 
   @ViewChild(MatPaginator) paginator !: MatPaginator;
   @ViewChild(MatSort) sort !: MatSort;
+
+  seachDate = new FormGroup({
+    start: new FormControl(),
+    end: new FormControl(),
+  });
+
+
+  @ViewChild('groupCd', {
+    read: MatSelect
+  })
+  groupCd!: MatSelect;
+
+  @ViewChild('taskCd', {
+    read: MatSelect
+  })
+  taskCd!: MatSelect;
+
+  @ViewChild('tradeType', {
+    read: MatSelect
+  })
+  tradeType!: MatSelect;
+
+  @ViewChild('sub', {
+    read: MatInput
+  })
+  sub!: MatInput;
+
+  @ViewChild('sec', {
+    read: MatInput
+  })
+  sec!: MatInput;
+
+  @ViewChild('tus', {
+    read: MatSelect
+  })
+  tus!: MatSelect;
+
 
   constructor(
     private corService: CoreService,
@@ -93,11 +131,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     this.tradeTypeList = CORE_SEC_MOV_TRADE_TYPE;
   }
 
-
-
-
   ngAfterViewInit(): void {
-    this.numberPage.setValue(this.m_sizePage);
+    this.numberPage.setValue(this.m_sizePage + 1);
     this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
     this.getCorSubAcco();
     this.getMstSec();
@@ -130,13 +165,17 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     console.log(event);
     this.m_limit = event.pageSize;
     this.m_sizePage = event.pageIndex;
-    this.numberPage.setValue(event.pageIndex);
+    this.numberPage.setValue(event.pageIndex + 1);
     this.getCoreSecMov(this.query, event.pageSize, event.pageIndex);
   }
 
   onNextPage() {
-    console.log(this.numberPage.value);
-    this.m_sizePage = this.numberPage.value;
+    if (this.numberPage.value > this.numberPageAll) {
+      this.m_sizePage = this.numberPageAll - 1;
+      this.numberPage.setValue(this.numberPageAll);
+    } else {
+      this.m_sizePage = this.numberPage.value - 1;
+    }
     this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
   }
 
@@ -227,7 +266,7 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
       this.dataSource.sort = this.sort;
       this.m_length = data.count;
-      this.numberPageAll = Math.floor(this.m_length / this.m_limit);
+      this.numberPageAll = Math.ceil(this.m_length / this.m_limit);
     }, err => console.log(err))
   }
 
@@ -252,8 +291,8 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
 
   async search() {
     this.query = {
-      startDate: this.startDate,
-      endDate: this.endDate,
+      startDate: this.seachDate.value.start,
+      endDate: this.seachDate.value.end,
       status: this.getStatus(this.statusSelect).data,
       groupCd: this.getGroupCd(this.groupCdSelect).value,
       taskCd: this.getTaskCd(this.taskCdSelect).value,
@@ -262,18 +301,31 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
       secCd: this.secCdControl.value
     };
 
-    await this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
+    this.m_sizePage = 0;
     this.paginator.pageIndex = 0;
+    this.numberPage.setValue(1);
+
+    await this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
   }
 
   async reset() {
+
+    this.seachDate.reset();
+
+    this.groupCd.value = '';
+    this.taskCd.value = '';
+    this.tradeType.value = '';
+    this.sub.value = '';
+    this.sec.value = '';
+    this.tus.value = '';
+
     this.query = {};
     this.m_limit = 10;
     this.m_sizePage = 0;
-
+    this.numberPage.setValue(1);
     await this.getCoreSecMov(this.query, this.m_limit, this.m_sizePage);
     this.paginator.pageIndex = 0;
-    this.paginator.pageSize = 0;
+    this.paginator.pageSize = 10;
   }
 
   aprrovedCorSecMov(row: any) {
@@ -479,38 +531,48 @@ export class CorSecMovComponent implements OnInit, AfterViewInit {
     return dateStr.toString();
   }
 
-  exportExcel(): void {
-    const exportList = [];
-    for (let [index, item] of this.listSecMov.entries()) {
-      exportList.push({
-        'Ngày': this.getDateFormat(item.alloDate),
-        'STT gốc': item.srcNo,
-        'Ngày hiệu lực ': this.getDateFormat(item.effectDate),
-        'Trạng thái': this.getStatus(item.status).name,
-        'Nghiệp vụ': this.getGroupCd(item.groupCd).name,
-        'Mã thao tác': item.globalTransId,
-        'Thao tác': this.getTaskCd(item.taskCd).name,
-        'Tiểu khoản ': item.subAccoNo,
-        'Tăng/Giảm ': this.getTradeType(item.tradeType).name,
-        'Mã CK': item.secCd,
-        'Số lượng': item.quantity,
-        'Loại chứng khoán': this.getQuantityType(item.quantityType).name,
-        'Nội dung ': item.description,
-        'Nội dung tiếng anh': item.descriptionEn,
-        'Đơn vị': item.unitCode,
-        'Ghi chú ': item.remarks,
-        'Người duyệt': item.approvedUserId,
-        'Ngày duyệt': this.getTimeFormat(item.approvedTime),
-        'Người hủy': item.cancelledUserId,
-        'Ngày hủy': this.getTimeFormat(item.cancelledTime),
-        'Người tạo': item.createdUserId,
-        'Ngày tạo': this.getTimeFormat(item.createdTime),
-        'Người cập nhật': item.updatedUserId,
-        'Ngày cập nhật': this.getTimeFormat(item.updatedTime),
-        'STT': this.listSecMov.length - index
-      });
-    }
-    this.exportService.exportExcel(exportList, 'Bảng kiểm soát - Giao dịch chứng khoán - ' + new Date().toString().slice(3, 15))
+  async exportExcel() {
+    var dataCorSecMov: CorSecMov[] = [];
+
+    await this.corService.getSecMov({}, 0, 0).subscribe(data => {
+
+      dataCorSecMov = data.data;
+      const exportList = [];
+
+      for (let [index, item] of dataCorSecMov.entries()) {
+        exportList.push({
+          'Ngày': this.getDateFormat(item.alloDate),
+          'STT gốc': item.srcNo,
+          'Ngày hiệu lực ': this.getDateFormat(item.effectDate),
+          'Trạng thái': this.getStatus(item.status).name,
+          'Nghiệp vụ': this.getGroupCd(item.groupCd).name,
+          'Mã thao tác': item.globalTransId,
+          'Thao tác': this.getTaskCd(item.taskCd).name,
+          'Tiểu khoản ': item.subAccoNo,
+          'Tăng/Giảm ': this.getTradeType(item.tradeType).name,
+          'Mã CK': item.secCd,
+          'Số lượng': item.quantity,
+          'Loại chứng khoán': this.getQuantityType(item.quantityType).name,
+          'Nội dung ': item.description,
+          'Nội dung tiếng anh': item.descriptionEn,
+          'Đơn vị': item.unitCode,
+          'Ghi chú ': item.remarks,
+          'Người duyệt': item.approvedUserId,
+          'Ngày duyệt': this.getTimeFormat(item.approvedTime),
+          'Người hủy': item.cancelledUserId,
+          'Ngày hủy': this.getTimeFormat(item.cancelledTime),
+          'Người tạo': item.createdUserId,
+          'Ngày tạo': this.getTimeFormat(item.createdTime),
+          'Người cập nhật': item.updatedUserId,
+          'Ngày cập nhật': this.getTimeFormat(item.updatedTime),
+          'STT': this.listSecMov.length - index
+        });
+      }
+
+      this.exportService.exportExcel(exportList, 'Bảng kiểm soát - Giao dịch chứng khoán - ' + new Date().toString().slice(3, 15))
+    }, err => console.log(err))
+
+
   }
 
   isAllSelected(): boolean {
